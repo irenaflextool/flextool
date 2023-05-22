@@ -233,7 +233,11 @@ Create the scenario, **commit**, execute and explore how the reserve requirement
 
 # More functionality
 
-## Adding a storage unit (battery)
+Now you have learned how to create a small model. If you want to save it, make a copy the database and name it something else for example Tutorial.sqlite. Remember that you can change which database is used as the *Input_data* by clicking it. In the same way, the *Results* database can be saved and changed.  
+
+For the rest of the tutorial, you can look and play with the ready scenarios from the init database. Purge *Input_data* and *Initialize* it to copy the init database to it.   
+
+## Adding a storage unit (battery) (scenario: wind_battery)
 
 ***init - west - wind - battery***
 
@@ -241,13 +245,15 @@ In the ***Init*** SQLite database, there is a `scenario` *wind_battery* - the *w
 
 In FlexTool, only `nodes` can have storage. This means that `existing` capacity and all investment parameters for `nodes` refer to the amount of storage the `node` can have. In this example, a *battery* `node` is established to describe the storage properties of the *battery* (e.g. `existing` capacity and `self_discharge_loss` in each hour). 
 
+You can see that the battery has three storage methods defined. Having multiple storage methods can create infeasible problems. This is why some of the combinations shouldn't (and couldn't) be used at the same time. If multiple methods are used, some of them might be ignored by the method hierarcy. More information can be found from [Model Parameters: Using nodes as storages](https://irena-flextool.github.io/flextool/reference). For now, you can change the `storage_start_end_method` to *fix_start_end*. This overrides the other methods and sets the start and end capacities of the storage.
+
 Battery also needs charging and discharging capabilities. These could be presented either with a `connection` or by having a charging `unit` and a discharging `unit`. In here, we are using a `connection` called *batter_inverter*, since its easier to prevent simultaneous charging and discharging that way (although, in a linear model, this cannot be fully prevented since that requires an integer variable). Please note that the `efficiency` parameter of the `connection` applies to both directions, so the round-trip `efficiency` will be `efficiency` squared.
 
 The `transfer_method` can be used by all types of connections, but in this case it is best to choose *regular*, which tries to avoid simultaneous charging and discharing, but can still do it when the model needs to dissipate energy. *exact* method would prevent that, but it would require integer variables and make the storage computationally much more expensive. Model leakage will be reported in the results (forthcoming).
 
 ![Add a battery](./battery.png)
 
-##  Adding battery investment capabilities 
+##  Adding battery investment capabilities (scenario: wind_battery_invest)
 
 ***init - west - wind - battery - battery_invest***
 
@@ -291,7 +297,7 @@ Finally, FlexTool can actually mix three different types of constraint coefficie
 
 ![Add battery investments](./battery_invest.png)
 
-## Combined heat and power (CHP) example
+## Combined heat and power (CHP) example (scenario: coal_chp)
 
 ***init - west - coal_chp - heat***
 
