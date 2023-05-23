@@ -231,14 +231,15 @@ Create the scenario, **commit**, execute and explore how the reserve requirement
 
  ![Add a reserve](./reserves.png)
 
-# More functionality
+## More functionality
 
 Now you have learned how to create a small model. If you want to save it, make a copy the database and name it something else for example Tutorial.sqlite. Remember that you can change which database is used as the *Input_data* by clicking it. In the same way, the *Results* database can be saved and changed.  
 
 For the rest of the tutorial, you can look and play with the ready scenarios from the init database. Purge *Input_data* and *Initialize* it to copy the init database to it.   
 
-## Adding a storage unit (battery) (scenario: wind_battery)
+## Adding a storage unit (battery) 
 
+**(scenario: wind_battery)**
 ***init - west - wind - battery***
 
 In the ***Init*** SQLite database, there is a `scenario` *wind_battery* - the *wind_plant* alone is not able to meet the load in all conditions, but the *battery* will help it to improve the situation.
@@ -253,8 +254,9 @@ The `transfer_method` can be used by all types of connections, but in this case 
 
 ![Add a battery](./battery.png)
 
-##  Adding battery investment capabilities (scenario: wind_battery_invest)
+##  Adding battery investment capabilities 
 
+**(scenario: wind_battery_invest)**
 ***init - west - wind - battery - battery_invest***
 
 To make the *wind_battery* `scenario` more interesting, an option to invest in *battery* and *battery_inverter* is added. It also demonstrates how FlexTool can have more complicated constraints that the user defines through data. 
@@ -297,8 +299,9 @@ Finally, FlexTool can actually mix three different types of constraint coefficie
 
 ![Add battery investments](./battery_invest.png)
 
-## Combined heat and power (CHP) example (scenario: coal_chp)
+## Combined heat and power (CHP) example 
 
+**(scenario: coal_chp)**
 ***init - west - coal_chp - heat***
 
 This CHP plant is an another example where the user defined `constraint` (see the last equation in the previous example) is used to achieve desired behaviour. In a backpressure CHP, heat and power outputs are fixed - increase one of them, and you must also increase the other. In an extraction CHP plant the relation is more complicated - there is an allowed operating area between heat and power. Both can be depicted in FlexTool, but here a backpressure example is given. An extraction plant would require two or more *greater_than* and/or *lesser_than* `constraints` to define an operating area.
