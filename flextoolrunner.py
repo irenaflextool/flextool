@@ -380,6 +380,8 @@ class FlexToolRunner:
 
     def create_averaged_timeseries(self,solve):
         timeseries_map={
+            'pt_commodity.csv': "average",
+            'pt_group.csv': "average",
             'pt_node_inflow.csv': "sum",
             'pt_node.csv': "average",
             'pt_process.csv': "average",
@@ -387,6 +389,8 @@ class FlexToolRunner:
             'pt_process_source.csv': "average",
             'pt_process_sink.csv': "average",
             'pt_reserve__upDown__group.csv': "average",
+            'pbt_commodity.csv': "average",
+            'pbt_group.csv': "average",
             'pbt_node_inflow.csv': "sum",
             'pbt_node.csv': "average",
             'pbt_process.csv': "average",
@@ -1286,6 +1290,8 @@ class FlexToolRunner:
                 realfile.write(branch+"\n")
 
         timeseries_names=[
+        'pt_commodity.csv',
+        'pt_group.csv',
         'pbt_node_inflow.csv',
         'pbt_node.csv',
         'pbt_process.csv',

@@ -72,6 +72,8 @@
         "input/p_process_source_coefficient.csv",
         "input/p_profile.csv",
         "input/p_reserve__upDown__group.csv",
+        "input/pbt_commodity.csv",
+        "input/pbt_group.csv",
         "input/pbt_node.csv",
         "input/pbt_node_inflow.csv",
         "input/pbt_process.csv",

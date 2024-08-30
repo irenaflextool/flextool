@@ -5606,6 +5606,10 @@
                     "filter_re": "^node$"
                 },
                 {
+                    "map_type": "Dimension",
+                    "position": "hidden"
+                },
+                {
                     "map_type": "ParameterDefinition",
                     "position": 1,
                     "filter_re": "^penalty_down$|^penalty_up$|^self_discharge_loss$|^availability$|^storage_state_reference_value$",
@@ -5620,6 +5624,10 @@
                     "map_type": "Entity",
                     "position": 0,
                     "header": "node"
+                },
+                {
+                    "map_type": "Element",
+                    "position": "hidden"
                 },
                 {
                     "map_type": "Alternative",
@@ -6166,7 +6174,8 @@
                 },
                 {
                     "map_type": "IndexName",
-                    "position": "hidden"
+                    "position": "hidden",
+                    "filter_re": "^(?!period)"
                 },
                 {
                     "map_type": "ParameterValueIndex",
@@ -6648,6 +6657,158 @@
                     "map_type": "ParameterValue",
                     "position": 1,
                     "header": "node_type"
+                }
+            ],
+            "enabled": true,
+            "always_export_header": true,
+            "group_fn": "no_group",
+            "use_fixed_table_name": true
+        },
+        "p_commodity_bt": {
+            "type": "entity_parameter_values",
+            "mapping": [
+                {
+                    "map_type": "FixedValue",
+                    "position": "table_name",
+                    "value": "pbt_commodity"
+                },
+                {
+                    "map_type": "EntityClass",
+                    "position": "hidden",
+                    "filter_re": "^commodity$"
+                },
+                {
+                    "map_type": "ParameterDefinition",
+                    "position": 1,
+                    "header": "commodityParam"
+                },
+                {
+                    "map_type": "ParameterValueList",
+                    "position": "hidden",
+                    "ignorable": true
+                },
+                {
+                    "map_type": "Entity",
+                    "position": 0,
+                    "header": "commodity"
+                },
+                {
+                    "map_type": "Alternative",
+                    "position": "hidden"
+                },
+                {
+                    "map_type": "ParameterValueType",
+                    "position": "hidden",
+                    "filter_re": "3d_map"
+                },
+                {
+                    "map_type": "IndexName",
+                    "position": "hidden"
+                },
+                {
+                    "map_type": "ParameterValueIndex",
+                    "position": 2,
+                    "header": "branch"
+                },
+                {
+                    "map_type": "IndexName",
+                    "position": "hidden"
+                },
+                {
+                    "map_type": "ParameterValueIndex",
+                    "position": 3,
+                    "header": "time_start"
+                },
+                {
+                    "map_type": "IndexName",
+                    "position": "hidden",
+                    "filter_re": "^(?!period)"
+                },
+                {
+                    "map_type": "ParameterValueIndex",
+                    "position": 4,
+                    "header": "time"
+                },
+                {
+                    "map_type": "ExpandedValue",
+                    "position": 5,
+                    "header": "pbt_commodity"
+                }
+            ],
+            "enabled": true,
+            "always_export_header": true,
+            "group_fn": "no_group",
+            "use_fixed_table_name": true
+        },
+        "p_group_bt": {
+            "type": "entity_parameter_values",
+            "mapping": [
+                {
+                    "map_type": "FixedValue",
+                    "position": "table_name",
+                    "value": "pbt_group"
+                },
+                {
+                    "map_type": "EntityClass",
+                    "position": "hidden",
+                    "filter_re": "^group$"
+                },
+                {
+                    "map_type": "ParameterDefinition",
+                    "position": 1,
+                    "header": "groupParam"
+                },
+                {
+                    "map_type": "ParameterValueList",
+                    "position": "hidden",
+                    "ignorable": true
+                },
+                {
+                    "map_type": "Entity",
+                    "position": 0,
+                    "header": "group"
+                },
+                {
+                    "map_type": "Alternative",
+                    "position": "hidden"
+                },
+                {
+                    "map_type": "ParameterValueType",
+                    "position": "hidden",
+                    "filter_re": "3d_map"
+                },
+                {
+                    "map_type": "IndexName",
+                    "position": "hidden"
+                },
+                {
+                    "map_type": "ParameterValueIndex",
+                    "position": 2,
+                    "header": "branch"
+                },
+                {
+                    "map_type": "IndexName",
+                    "position": "hidden"
+                },
+                {
+                    "map_type": "ParameterValueIndex",
+                    "position": 3,
+                    "header": "time_start"
+                },
+                {
+                    "map_type": "IndexName",
+                    "position": "hidden",
+                    "filter_re": "^(?!period)"
+                },
+                {
+                    "map_type": "ParameterValueIndex",
+                    "position": 4,
+                    "header": "time"
+                },
+                {
+                    "map_type": "ExpandedValue",
+                    "position": 5,
+                    "header": "pbt_group"
                 }
             ],
             "enabled": true,
