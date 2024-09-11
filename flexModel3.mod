@@ -314,7 +314,7 @@ set node__param__time dimen 3 within {node, nodeTimeParam, time};
 set node__time_inflow dimen 2 within {node, time};
 
 set commodity__TimeParam dimen 2 within {commodity, commodityTimeParam};
-set commodity__param__time dimen 3 within {commoidty, commodityTimeParam, time};
+set commodity__param__time dimen 3 within {commodity, commodityTimeParam, time};
 set group__TimeParam dimen 2 within {group, groupTimeParam};
 set group__param__time dimen 3 within {group, groupTimeParam, time};
 
@@ -400,8 +400,8 @@ set node__param__branch__time dimen 5 within {node, nodeTimeParam, time_branch_a
 set node__branch__time_inflow dimen 4 within {node, time_branch_all, time, time};
 set reserve__upDown__group__reserveParam__branch__time dimen 7 within {reserve, upDown, group, reserveTimeParam, time_branch_all, time, time};
 
-param pbt_commodity {node, commodityTimeParam, time_branch_all, time, time} default 0;
-param pbt_group {node, groupTimeParam, time_branch_all, time, time} default 0;
+param pbt_commodity {commodity, commodityTimeParam, time_branch_all, time, time} default 0;
+param pbt_group {group, groupTimeParam, time_branch_all, time, time} default 0;
 param pbt_node {node, nodeTimeParam, time_branch_all, time, time} default 0;
 param pbt_node_inflow {node, time_branch_all, time, time} default 0;
 param pbt_process_source {(p, source) in process_source, sourceSinkTimeParam, time_branch_all, time, time} default 0;
@@ -776,9 +776,15 @@ param pdCommodity {c in commodity, param in commodityPeriodParam, d in period} :
       then sum{(db, d) in period__branch} pd_commodity[c, param, db]
       else p_commodity[c, param];
 
-param pdtCommodity {(c, param) in commodity__TimeParam, (d, t) in dt} :=
+set commodity_TimeParam_in_use :=
+  {c in commodity, param in commodityTimeParam:
+    (exists{(c, param, t) in commodity__param__time: t in time_in_use} 1 ||
+    exists{(c,param, tb, ts, t) in commodity__param__branch__time: t in time_in_use} 1)
+  };
+
+param pdtCommodity {(c, param) in commodity_TimeParam_in_use, (d, t) in dt} :=
       + if exists{(d,ts) in period__time_first, (d,tb) in solve_branch__time_branch: (c, param, tb, ts, t) in commodity__param__branch__time} 1 
-           && exists{(g,n) in group_node: g in groupStochastic && (c,n) in commodity__node} 1
+           && exists{(g,n) in group_node: g in groupStochastic && (c,n) in commodity_node} 1
              then sum{(d,ts) in period__time_first, (d,tb) in solve_branch__time_branch} pbt_commodity[c, param, tb, ts, t]
         else if exists{(p,tb) in solve_branch__time_branch, (d,ts) in period__time_first: (p,d) in period__branch && (c, param, tb, ts, t) in commodity__param__branch__time} 1
              then sum{(p,tb) in solve_branch__time_branch, (d,ts) in period__time_first: (p,d) in period__branch} pbt_commodity[c, param, tb, ts, t] 
@@ -786,9 +792,7 @@ param pdtCommodity {(c, param) in commodity__TimeParam, (d, t) in dt} :=
 		     then pt_commodity[c, param, t]
         else if (c, param, d) in commodity__param__period
 		     then pd_commodity[c, param, d]
-		else if (c, param) in commodity__param 
-		     then p_commodity[c, param]
-        else 0;
+		    else p_commodity[c, param];
 
 param pdGroup {g in group, param in groupPeriodParam, d in period} :=
         + if (g, param, d) in group__param__period
@@ -801,7 +805,13 @@ param pdGroup {g in group, param in groupPeriodParam, d in period} :=
       then 5000
 		  else 0;
 
-param pdtGroup {(c, param) in group__TimeParam, (d, t) in dt} :=
+set group_TimeParam_in_use :=
+  {g in group, param in groupTimeParam:
+    (exists{(g, param, t) in group__param__time: t in time_in_use} 1 ||
+    exists{(g, param, tb, ts, t) in group__param__branch__time: t in time_in_use} 1)
+  };
+
+param pdtGroup {(g, param) in group_TimeParam_in_use, (d, t) in dt} :=
       + if exists{(d,ts) in period__time_first, (d,tb) in solve_branch__time_branch: (g, param, tb, ts, t) in group__param__branch__time} 1 
            && g in groupStochastic
              then sum{(d,ts) in period__time_first, (d,tb) in solve_branch__time_branch} pbt_group[g, param, tb, ts, t]
@@ -1457,8 +1467,9 @@ set group_commodity_node_period_co2_price :=
 		    (g, n) in group_node 
 			&& p_commodity[c, 'co2_content'] 
 			&& g in group_co2_price
-			&&(pdGroup[g, 'co2_price', d]
-      || pdtGroup[g, 'co2_price', d, t])
+			&& (pdGroup[g, 'co2_price', d]
+      || exists{(g, 'co2_price', t) in group__param__time: t in time_in_use} 1
+      || exists{(g, 'co2_price', d, ts, t) in group__param__branch__time: (d,t) in dt} 1)
 		};
 set gcndt_co2_price := {(g, c, n, d) in group_commodity_node_period_co2_price, t in time_in_use : (d, t) in dt};
 
@@ -1816,7 +1827,7 @@ param setup2 := gmtime() - datetime0 - setup1 - w_calc_slope;
 display setup2;
 minimize total_cost:
 ( + sum {(c, n) in commodity_node, (d, t) in dt}
-    (+ pdtCommodity[c, 'price', d, t]
+    (+ (if (c,'price') in commodity_TimeParam_in_use then pdtCommodity[c, 'price', d, t] else pdCommodity[c, 'price', d])
 	  * (
 		  # Buying a commodity (increases the objective function)
 		  + sum {(p, n, sink) in process_source_sink_noEff } 
@@ -1841,7 +1852,7 @@ minimize total_cost:
 	  * step_duration[d, t] * p_discount_factor_operations_yearly[d] / complete_period_share_of_year[d] * pdt_branch_weight[d,t]
 	)
   + sum {(g, c, n, d, t) in gcndt_co2_price} 
-    (+ p_commodity[c, 'co2_content'] * pdtGroup[g, 'co2_price', d, t] 
+    (+ p_commodity[c, 'co2_content'] * (if (g,'co2_price') in group_TimeParam_in_use then pdtGroup[g, 'co2_price', d, t] else pdGroup[g, 'co2_price', d]) 
 	  * (
 		  # Paying for CO2 (increases the objective function)
 		  + sum {(p, n, sink) in process_source_sink_noEff } 
@@ -5440,6 +5451,8 @@ display w_unit_test;
 
 param w_full := gmtime()-datetime0;
 display w_full;
+display commodity_TimeParam_in_use;
+display pdtCommodity;
 #display period_first;
 #display period;
 #display period__time_first;
