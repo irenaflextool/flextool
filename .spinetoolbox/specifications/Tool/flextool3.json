@@ -101,6 +101,8 @@
         "input/process_nonSync_connection.csv",
         "input/process_unit.csv",
         "input/profile.csv",
+        "input/pt_commodity.csv",
+        "input/pt_group.csv",
         "input/pt_node.csv",
         "input/pt_node_inflow.csv",
         "input/pt_process.csv",
